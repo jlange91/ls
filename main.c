@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/06 17:20:27 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/06 18:40:17 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/06 22:20:15 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,20 @@ int main(int ac, char **av)
 	struct stat test2;
 	DIR *ntm;
 
-	if ((ntm = opendir("/dev")) == NULL)
+	if (av[1])
 	{
-		ft_printf("ntm salope\n");
+		if ((ntm = opendir(av[1])) == NULL)
+		{
+			ft_printf("ntm salope\n");
+		}
+		else
+		{
+			while ((test = readdir(ntm)))
+			{
+				if(test->d_name[0] != '.')
+					ft_printf("%s\n", test->d_name);
+			}
+			close(ntm);
+		}
 	}
-	while ((test = readdir(ntm)))
-	{
-		ft_printf("%s\n", test->d_name);
-	}
-	close(ntm);
 }
