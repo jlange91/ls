@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/06 17:20:27 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/10 22:28:44 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/11 21:02:52 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <grp.h>
 #include <uuid/uuid.h>
 #include <time.h>
+#include <sys/types.h>
 
 /*int main(int ac, char **av)
 {
@@ -51,25 +52,24 @@
 
 void	ft_test1(struct stat test)
 {
-	char type[] = "-dbl\0";
-	int tab[] = {S_IFREG, S_IFDIR, S_IFBLK, S_IFLNK};
+	char type[] = "-dlbcp\0";
+	int tab[] = {S_IFREG, S_IFDIR, S_IFLNK, S_IFBLK,S_IFCHR, S_IFIFO};
 	int i;
 
 	i = 0;
-	while ((test.st_mode & tab[i]) != (test.st_mode & 0xF000))
+	while (tab[i] && ((test.st_mode & 0xF000) ^ tab[i]) != 0)
 		i++;
 	printf("%c", type[i]);
 }
 
 void	ft_test2(struct stat test)
 {
-	char type[8][4] = {"---", "r--", "-w-", "--x", "rw-", "r-x", "-wx", "rwx"};
-	int tab[] = {0b0, 0b100000000, 0b010000000, 0b001000000, 0b110000000,
-		0b101000000, 0b011000000, 0b111000000};
+	char type[9][4] = {"---", "r--", "-w-", "--x", "rw-", "r-x", "-wx", "rwx", 0};
+	int tab[] = {00, 0400, 0200, 0100, 0600, 0500, 0300, 0700};
 	int i;
 
 	i = 0;
-	while (((test.st_mode & tab[i]) != (test.st_mode & 0b111000000)) && i != 8)
+	while (((test.st_mode & tab[i]) != (test.st_mode & 0700)) && i != 8)
 		i++;
 	if (i != 8)
 		printf("%s", type[i]);
@@ -77,13 +77,12 @@ void	ft_test2(struct stat test)
 
 void	ft_test3(struct stat test)
 {
-	char type[8][4] = {"---", "r--", "-w-", "--x", "rw-", "r-x", "-wx", "rwx"};
-	int tab[] = {0b0, 0b100000, 0b010000, 0b001000, 0b110000, 0b101000,
-		0b011000, 0b111000};
+	char type[9][4] = {"---", "r--", "-w-", "--x", "rw-", "r-x", "-wx", "rwx", 0};
+	int tab[] = {00, 040, 020, 010, 060, 050, 030, 070};
 	int i;
 
 	i = 0;
-	while (((test.st_mode & tab[i]) != (test.st_mode & 0b111000)) && i != 8)
+	while (((test.st_mode & tab[i]) != (test.st_mode & 070)) && i != 8)
 		i++;
 	if (i != 8)
 		printf("%s", type[i]);
@@ -91,14 +90,17 @@ void	ft_test3(struct stat test)
 
 void	ft_test4(struct stat test)
 {
-	char type[8][4] = {"---", "r--", "-w-", "--x", "rw-", "r-x", "-wx", "rwx"};
-	int tab[] = {0b0, 0b100, 0b010, 0b001, 0b110, 0b101, 0b011, 0b111};
+	char type[9][4] = {"---", "r--", "-w-", "--x", "rw-", "r-x", "-wx", "rwx", 0};
+	char type2[9][4] = {"---", "r--", "-w-", "--x", "rwT", "r-x", "-wx", "rwt", 0};
+	int tab[] = {00, 04, 02, 01, 06, 05, 03, 07};
 	int i;
 
 	i = 0;
-	while (((test.st_mode & tab[i]) != (test.st_mode & 0b111)) && i != 8)
+	while (((test.st_mode & tab[i]) != (test.st_mode & 07)) && i != 8)
 		i++;
-	if (i != 8)
+	if (i != 8 && test.st_mode & 01000)
+		printf("%s", type2[i]);
+	else if (i != 8)
 		printf("%s", type[i]);
 }
 
@@ -131,11 +133,8 @@ int main(int ac, char **av)
 		printf("\nnombre de lien : %d\n", test2.st_nlink);
 		display_uid(test2.st_uid, test2.st_gid);
 		printf("taille : %lld octets\n", test2.st_size);
+		if (((test2.st_mode & 0xF000) ^ S_IFBLK) == 0 ||
+				((test2.st_mode & 0xF000) ^ S_IFCHR) == 0)
+			printf("majeur : %d   mineur : %d", major(test2.st_rdev), minor(test2.st_rdev));
 	}
 }
-
-/*int main(int ac, char **av)
-{
-
-	return (0);
-}*/
