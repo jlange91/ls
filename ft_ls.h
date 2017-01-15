@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/11 16:36:16 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/11 19:26:27 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/15 21:29:37 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,21 @@
 # include <uuid/uuid.h>
 # include <time.h>
 
-typedef struct		s_ls
+typedef struct		s_folder
 {
-	struct dirent *dirent;
-	struct stat *stat;
-	DIR *dir;
-}					t_ls;
+	char	*name;
+	int		nb_file;
+}					t_folder;
+
+typedef struct		s_file
+{
+	struct dirent	*dirent;
+	struct stat		stat;
+	struct passwd	*uid;
+	struct group	*grp;
+	char			*buf;
+	struct s_file	*left;
+	struct s_file	*right;
+}					t_file;
 
 #endif

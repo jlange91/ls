@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/06 17:20:27 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/11 21:02:52 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/15 17:08:33 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,34 +22,25 @@
 #include <time.h>
 #include <sys/types.h>
 
-/*int main(int ac, char **av)
+int main(int ac, char **av)
 {
 	struct dirent *test;
-	struct stat test2;
 	DIR *ntm;
 
 	if (av[1])
 	{
 		if ((ntm = opendir(av[1])) == NULL)
-		{
 			write(1, "ntm salope\n", 11);
-		}
 		else
 		{
 			while ((test = readdir(ntm)))
-			{
-				if(test->d_name[0] != '.')
-				{
-					ft_printf("%s   ", test->d_name);
-					ft_printf("%d    ", stat(test->d_name, &test2));
-					ft_printf("%d\n", test2.st_flags);
-				}
-			}
+				if (test->d_name[0] != '.')
+					ft_printf("%s\n", test->d_name);
 			closedir(ntm);
 		}
 	}
-}*/
-
+}
+/*
 void	ft_test1(struct stat test)
 {
 	char type[] = "-dlbcp\0";
@@ -137,4 +128,4 @@ int main(int ac, char **av)
 				((test2.st_mode & 0xF000) ^ S_IFCHR) == 0)
 			printf("majeur : %d   mineur : %d", major(test2.st_rdev), minor(test2.st_rdev));
 	}
-}
+}*/
