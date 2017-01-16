@@ -106,24 +106,25 @@ void	fill_three(t_file *new, t_file *root)
 	while (1)
 	{
 		nb = mystrcmp(new->dirent->d_name, root->dirent->d_name);
-		printf("1\n");
-		if (nb > 0 && root->left == NULL)
+		if (nb > 0)
 		{
-			root->left = new;
-			return ;
+			if (root->right == NULL)
+			{
+				root->right = new;
+				return ;
+			}
+			else
+				root = root->right;
 		}
-		else if (nb <= 0 && root->right == NULL)
+		else
 		{
-			root->right = new;
-			return ;
-		}
-		if (nb > 0 && root->left)
-		{
-			root = root->right;
-		}
-		else if (nb <= 0 && root->right)
-		{
-			root = root->left;
+			if (root->left == NULL)
+			{
+				root->left = new;
+				return ;
+			}
+			else
+				root = root->left;
 		}
 	}
 }
@@ -195,7 +196,7 @@ int		fill_info_file(char *name, int nb_file, int flags)
 		fill_three(&file[i], &file[0]);
 		i++;
 	}
-//	ft_test2(&file[0]);
+	ft_test2(&file[0]);
 	ft_print_three(&file[0]);
 	closedir(dir);
 	return (0);
