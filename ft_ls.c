@@ -76,25 +76,14 @@ void	echanger(t_file *file, int a, int b)
 
 void	ft_test(t_file *file)
 {
-	t_file tmp;
 	int i;
-	int ret;
 
 	i = 0;
-	ret = 0;
-	while (file[i + 1].dirent != NULL)
+	while (file[i].dirent != NULL)
 	{
-		if (file[i].dirent->d_name[0] > file[i + 1].dirent->d_name[0])
-		{
-			tmp = file[i];
-			file[i] = file[i + 1];
-			file[i + 1] = tmp;
-			ret++;
-		}
+		printf("%d   %s\n", i, file[i].dirent->d_name);
 		i++;
 	}
-	if (ret != 0)
-		ft_test(file);
 }
 
 void	fill_three(t_file *new, t_file *root)
@@ -133,18 +122,18 @@ void	ft_print_three(t_file *root)
 {
 	if (root->left)
 		ft_print_three(root->left);
+	printf("%s\n", root->dirent->d_name);
 	if (root->right)
 		ft_print_three(root->right);
-	printf("%s\n", root->dirent->d_name);
 }
 
 void	ft_print_reverse_three(t_file *root)
 {
 	if (root->right)
-		ft_print_three(root->right);
-	if (root->left)
-		ft_print_three(root->left);
+		ft_print_reverse_three(root->right);
 	printf("%s\n", root->dirent->d_name);
+	if (root->left)
+		ft_print_reverse_three(root->left);
 }
 
 void	ft_test2(t_file *root)
@@ -186,6 +175,8 @@ int		fill_info_file(char *name, int nb_file, int flags)
 			file[i].uid = getpwuid(file[i].stat.st_uid);
 			file[i].grp = getgrgid(file[i].stat.st_gid);
 		}
+		if (i > 0)
+			printf("%d   %s\n",i, file[i - 1].dirent->d_name);
 		i++;
 	}
 	i = 1;
@@ -196,7 +187,7 @@ int		fill_info_file(char *name, int nb_file, int flags)
 		fill_three(&file[i], &file[0]);
 		i++;
 	}
-	ft_test2(&file[0]);
+//	ft_test2(&file[0]);
 	ft_print_three(&file[0]);
 	closedir(dir);
 	return (0);
