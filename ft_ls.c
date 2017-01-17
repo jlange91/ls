@@ -6,135 +6,11 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/11 14:26:04 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/15 23:13:31 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/17 21:00:53 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
-
-int		myft_strlen(const char *s)
-{
-	unsigned	x;
-	int			len;
-
-	len = 0;
-	while (1)
-	{
-		x = *(unsigned*)s;
-		if ((x & 0xFF) == 0)
-			return (len);
-		if ((x & 0xFF00) == 0)
-			return (len + 1);
-		if ((x & 0xFF0000) == 0)
-			return (len + 2);
-		if ((x & 0xFF000000) == 0)
-			return (len + 3);
-		s += 4;
-		len += 4;
-	}
-}
-
-int		count_folder(char *name, int flags)
-{
-	struct dirent *dirent;
-	DIR *dir;
-	int len;
-
-	len = 0;
-	if ((dir = opendir(name)) == NULL)
-	{
-		perror("");
-		return (-1);
-	}
-	while ((dirent = readdir(dir)))
-		len++;
-	closedir(dir);
-	return (len);
-}
-
-int		mystrcmp(char *s1, const char *s2)
-{
-	unsigned char	*tmp1;
-	unsigned char	*tmp2;
-
-	tmp1 = (unsigned char *)s1;
-	tmp2 = (unsigned char *)s2;
-	while (*tmp1 == *tmp2)
-		if (!(*tmp1++ + *tmp2++))
-			return (0);
-	return (*tmp1 - *tmp2);
-}
-
-void	echanger(t_file *file, int a, int b)
-{
-	t_file tmp;
-
-	tmp = file[a];
-	file[a] = file[b];
-	file[b] = tmp;
-}
-
-void	ft_test(t_file *file)
-{
-	int i;
-
-	i = 0;
-	while (file[i].dirent != NULL)
-	{
-		printf("%d   %s\n", i, file[i].dirent->d_name);
-		i++;
-	}
-}
-
-void	fill_three(t_file *new, t_file *root)
-{
-	int nb;
-
-	new->left = NULL;
-	new->right = NULL;
-	while (1)
-	{
-		nb = mystrcmp(new->dirent->d_name, root->dirent->d_name);
-		if (nb > 0)
-		{
-			if (root->right == NULL)
-			{
-				root->right = new;
-				return ;
-			}
-			else
-				root = root->right;
-		}
-		else
-		{
-			if (root->left == NULL)
-			{
-				root->left = new;
-				return ;
-			}
-			else
-				root = root->left;
-		}
-	}
-}
-
-void	ft_print_three(t_file *root)
-{
-	if (root->left)
-		ft_print_three(root->left);
-	printf("%s\n", root->dirent->d_name);
-	if (root->right)
-		ft_print_three(root->right);
-}
-
-void	ft_print_reverse_three(t_file *root)
-{
-	if (root->right)
-		ft_print_reverse_three(root->right);
-	printf("%s\n", root->dirent->d_name);
-	if (root->left)
-		ft_print_reverse_three(root->left);
-}
 
 void	ft_test2(t_file *root)
 {
@@ -158,6 +34,68 @@ void	ft_test2(t_file *root)
 	}
 }
 
+void	print(t_file *file)
+{
+	int i;
+
+	i = 0;
+	while (file[i].dirent != NULL)
+	{
+		printf("%s\n", file[i].d_name);
+		i++;
+	}
+}
+
+char	*ft_add_prefix(char *s1, char *s2)
+{
+	char	*ret;
+	int		i;
+	int		j;
+	if (!s1 || !s2)
+		return (NULL);
+	ret = (char*)malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 2));
+	i = -1;
+	j = -1;
+	if (ret == NULL)
+		return (NULL);
+	while (s1[++i])
+	{
+		ret[i] = s1[i];
+	}
+	ret[i] = '/';
+	++i;
+	while (s2[++j])
+	{
+		ret[i] = s2[j];
+		i++;
+	}
+	ret[i] = '\0';
+	return (ret);
+}
+
+void	ft_recursive(char *name, int flags)
+{
+	DIR *dir;
+	struct dirent *dirent;
+	struct stat stat;
+	char *tmp;
+
+	if ((dir = opendir(name)) == NULL)
+		return ;
+	while ((dirent = readdir(dir)))
+	{
+		tmp = ft_add_prefix(name, dirent->d_name);
+		lstat(tmp, &stat);
+		if (dirent->d_name[0] != '.' && (stat.st_mode & S_IFDIR) != 0)
+		{
+			write(1, tmp, ft_strlen(tmp));
+			ft_putendl(":");
+			init_struct_file(tmp, flags);
+		}
+	}
+	closedir(dir);
+}
+
 int		fill_info_file(char *name, int nb_file, int flags)
 {
 	DIR		*dir;
@@ -169,14 +107,14 @@ int		fill_info_file(char *name, int nb_file, int flags)
 		return (-1);
 	while ((file[i].dirent = readdir(dir)))
 	{
+		file[i].d_name = ft_strdup(file[i].dirent->d_name);
 		lstat(file[i].dirent->d_name, &(file[i].stat));
 		if ((flags & 0b10000))
 		{
 			file[i].uid = getpwuid(file[i].stat.st_uid);
 			file[i].grp = getgrgid(file[i].stat.st_gid);
 		}
-		if (i > 0)
-			printf("%d   %s\n",i, file[i - 1].dirent->d_name);
+	//	printf("%s\n", file[i].dirent->d_name);
 		i++;
 	}
 	i = 1;
@@ -190,6 +128,7 @@ int		fill_info_file(char *name, int nb_file, int flags)
 //	ft_test2(&file[0]);
 	ft_print_three(&file[0]);
 	closedir(dir);
+	ft_recursive(name, flags);
 	return (0);
 }
 
@@ -205,43 +144,28 @@ int		init_struct_file(char *name, int flags)
 int		ft_ls(int flags, char **av)
 {
 	int i;
+	int test;
 
 	i = 1;
-	while (av[i] && av[i][0] == '-')
-		i++;
+	test = 1;
+	while (av[i] && test == 1)
+	{
+		if (av[i][0] == '-')
+		{
+			if (av[i][1] == '-')
+			{
+				i++;
+				break ;
+			}
+			i++;
+		}
+		else
+			test = 0;
+	}
 	while (av[i])
 	{
 		init_struct_file(av[i], flags);
 		i++;
-	}
-	return (0);
-}
-
-int		init_flags(char **av, int *flags)
-{
-	int j;
-	int i;
-	int error;
-
-	j = 0;
-	while (av[++j] && av[j][0] == '-')
-	{
-		if (av[j][0] == '-' && av[j][1] == '-')
-			return (0);
-		i = 0;
-		while (av[j][++i])
-		{
-			error = 0;
-			(av[j][i] == 'l') ? (*flags |= 0b10000) : (error += 1);
-			(av[j][i] == 'R') ? (*flags |= 0b01000) : (error += 1);
-			(av[j][i] == 'a') ? (*flags |= 0b00100) : (error += 1);
-			(av[j][i] == 'r') ? (*flags |= 0b00010) : (error += 1);
-			(av[j][i] == 't') ? (*flags |= 0b00001) : (error += 1);
-			*flags &= (av[j][i] == '1') ? 0b01111 : 0b11111;
-			error -= (av[j][i] == '1') ? 1 : 0;
-			if (error == 5)
-				return (av[j][i]);
-		}
 	}
 	return (0);
 }

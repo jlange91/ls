@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/11 16:36:16 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/15 21:29:37 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/17 20:14:01 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <grp.h>
 # include <uuid/uuid.h>
 # include <time.h>
+# include "libft/includes/libft.h"
 
 typedef struct		s_folder
 {
@@ -31,6 +32,7 @@ typedef struct		s_folder
 
 typedef struct		s_file
 {
+	char			*d_name;
 	struct dirent	*dirent;
 	struct stat		stat;
 	struct passwd	*uid;
@@ -38,6 +40,14 @@ typedef struct		s_file
 	char			*buf;
 	struct s_file	*left;
 	struct s_file	*right;
+	char			*path;
 }					t_file;
+
+int		init_flags(char **av, int *flags);
+void	fill_three(t_file *neww, t_file *root);
+void	ft_print_three(t_file *root);
+void	ft_print_reverse_three(t_file *root);
+int		count_folder(char *name, int flags);
+int		init_struct_file(char *name, int flags);
 
 #endif
