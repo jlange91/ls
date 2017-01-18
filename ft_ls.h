@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/11 16:36:16 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/17 20:14:01 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/18 17:32:23 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,10 @@ typedef struct		s_file
 
 int		init_flags(char **av, int *flags);
 void	fill_three(t_file *neww, t_file *root);
-void	ft_print_three(t_file *root);
-void	ft_print_reverse_three(t_file *root);
+void	ft_print_three(t_file *root, int flags);
+void	ft_print_reverse_three(t_file *root, int flags);
 int		count_folder(char *name, int flags);
 int		init_struct_file(char *name, int flags);
+void	print_rights(struct stat stat);
 
 #endif

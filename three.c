@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/17 16:54:47 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/17 17:04:34 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/18 17:39:36 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,24 +44,28 @@ void	fill_three(t_file *new, t_file *root)
 	}
 }
 
-void	ft_print_three(t_file *root)
+void	ft_print_three(t_file *root, int flags)
 {
 	if (root->left)
-		ft_print_three(root->left);
-	ft_test1(root->stat);
-	ft_test2(root->stat);
-	ft_test3(root->stat);
-	ft_test4(root->stat);
-	ft_putendl(root->d_name);
+		ft_print_three(root->left, flags);
+	if (root->d_name[0] != '.' || (flags & 0b00100))
+	{
+		if ((flags & 0b10000))
+		{
+			print_rights(root->stat);
+			write(1, "  ", 2);
+		}
+		ft_putendl(root->d_name);
+	}
 	if (root->right)
-		ft_print_three(root->right);
+		ft_print_three(root->right, flags);
 }
 
-void	ft_print_reverse_three(t_file *root)
+void	ft_print_reverse_three(t_file *root, int flags)
 {
 	if (root->right)
-		ft_print_reverse_three(root->right);
+		ft_print_reverse_three(root->right, flags);
 	ft_putendl(root->d_name);
 	if (root->left)
-		ft_print_reverse_three(root->left);
+		ft_print_reverse_three(root->left, flags);
 }
