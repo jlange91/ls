@@ -12,7 +12,7 @@
 
 #include "ft_ls.h"
 
-void	ft_test2(t_file *root)
+void	ft_test9(t_file *root)
 {
 	while (1)
 	{
@@ -22,16 +22,70 @@ void	ft_test2(t_file *root)
 		if (c == 'l')
 		{
 			if (root->left)
-				ft_test2(root->left);
+				ft_test9(root->left);
 		}
 		else if (c == 'r')
 		{
 			if (root->right)
-				ft_test2(root->right);
+				ft_test9(root->right);
 		}
 		else if (c == 'b')
 			return ;
 	}
+}
+
+void	ft_test1(struct stat test)
+{
+	char type[] = "-dlbcp\0";
+	int tab[] = {S_IFREG, S_IFDIR, S_IFLNK, S_IFBLK,S_IFCHR, S_IFIFO};
+	int i;
+
+	i = 0;
+	while (tab[i] && ((test.st_mode & 0xF000) ^ tab[i]) != 0)
+		i++;
+	ft_putchar(type[i]);
+}
+
+void	ft_test2(struct stat test)
+{
+	char type[9][4] = {"---", "r--", "-w-", "--x", "rw-", "r-x", "-wx", "rwx", 0};
+	int tab[] = {00, 0400, 0200, 0100, 0600, 0500, 0300, 0700};
+	int i;
+
+	i = 0;
+	while (((test.st_mode & tab[i]) != (test.st_mode & 0700)) && i != 8)
+		i++;
+	if (i != 8)
+		ft_putstr(type[i]);
+}
+
+void	ft_test3(struct stat test)
+{
+	char type[9][4] = {"---", "r--", "-w-", "--x", "rw-", "r-x", "-wx", "rwx", 0};
+	int tab[] = {00, 040, 020, 010, 060, 050, 030, 070};
+	int i;
+
+	i = 0;
+	while (((test.st_mode & tab[i]) != (test.st_mode & 070)) && i != 8)
+		i++;
+	if (i != 8)
+		ft_putstr(type[i]);
+}
+
+void	ft_test4(struct stat test)
+{
+	char type[9][4] = {"---", "r--", "-w-", "--x", "rw-", "r-x", "-wx", "rwx", 0};
+	char type2[9][4] = {"---", "r--", "-w-", "--x", "rwT", "r-x", "-wx", "rwt", 0};
+	int tab[] = {00, 04, 02, 01, 06, 05, 03, 07};
+	int i;
+
+	i = 0;
+	while (((test.st_mode & tab[i]) != (test.st_mode & 07)) && i != 8)
+		i++;
+	if (i != 8 && test.st_mode & 01000)
+		ft_putstr(type2[i]);
+	else if (i != 8)
+		ft_putstr(type[i]);
 }
 
 void	print(t_file *file)
@@ -88,12 +142,31 @@ void	ft_recursive(char *name, int flags)
 		lstat(tmp, &stat);
 		if (dirent->d_name[0] != '.' && (stat.st_mode & S_IFDIR) != 0)
 		{
+			write(1, "\n", 1);
 			write(1, tmp, ft_strlen(tmp));
 			ft_putendl(":");
 			init_struct_file(tmp, flags);
 		}
 	}
 	closedir(dir);
+}
+
+void	ft_recursive2(t_file *root, int flags, char *name)
+{
+	char *tmp;
+
+	if (root->left)
+		ft_recursive2(root->left, flags, name);
+	if (root->d_name[0] != '.' && (root->stat.st_mode & S_IFDIR) != 0)
+	{
+		tmp = ft_add_prefix(name, root->d_name);
+		write(1, "\n", 1);
+		write(1, tmp, ft_strlen(tmp));
+		ft_putendl(":");
+		init_struct_file(tmp, flags);
+	}
+	if (root->right)
+		ft_recursive2(root->right, flags, name);
 }
 
 int		fill_info_file(char *name, int nb_file, int flags)
@@ -129,6 +202,7 @@ int		fill_info_file(char *name, int nb_file, int flags)
 	ft_print_three(&file[0]);
 	closedir(dir);
 	ft_recursive(name, flags);
+//	ft_recursive2(file, flags, name);
 	return (0);
 }
 

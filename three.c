@@ -48,6 +48,10 @@ void	ft_print_three(t_file *root)
 {
 	if (root->left)
 		ft_print_three(root->left);
+	ft_test1(root->stat);
+	ft_test2(root->stat);
+	ft_test3(root->stat);
+	ft_test4(root->stat);
 	ft_putendl(root->d_name);
 	if (root->right)
 		ft_print_three(root->right);
