@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/11 14:26:04 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/18 17:36:06 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/18 18:55:27 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,24 @@ void	ft_recursive(t_file *root, int flags, char *name)
 		ft_recursive(root->right, flags, name);
 }
 
+void	ft_reverse_recursive(t_file *root, int flags, char *name)
+{
+	char *tmp;
+
+	if (root->right)
+		ft_reverse_recursive(root->right, flags, name);
+	if (root->d_name[0] != '.' && ((root->stat.st_mode & 0xF000) ^ S_IFDIR) == 0)
+	{
+		tmp = ft_add_prefix(name, root->d_name);
+		write(1, "\n", 1);
+		write(1, tmp, ft_strlen(tmp));
+		ft_putendl(":");
+		init_struct_file(tmp, flags);
+	}
+	if (root->left)
+		ft_reverse_recursive(root->left, flags, name);
+}
+
 int		fill_info_file(char *name, int nb_file, int flags)
 {
 	DIR		*dir;
@@ -112,8 +130,15 @@ int		fill_info_file(char *name, int nb_file, int flags)
 		i++;
 	}
 //	ft_test2(&file[0]);
-	ft_print_three(&file[0], flags);
 	closedir(dir);
+	if ((flags & 0b00010))
+	{
+		ft_print_reverse_three(&file[0], flags);
+		if (flags & 0b01000)
+			ft_reverse_recursive(file, flags, name);
+		return (0);
+	}
+	ft_print_three(&file[0], flags);
 	if (flags & 0b01000)
 		ft_recursive(file, flags, name);
 	return (0);

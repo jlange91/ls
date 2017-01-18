@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/11 16:36:16 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/18 17:32:23 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/18 19:34:42 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <grp.h>
 # include <uuid/uuid.h>
 # include <time.h>
+# include <errno.h>
 # include "libft/includes/libft.h"
 
 typedef struct		s_folder

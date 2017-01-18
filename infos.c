@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/17 16:52:24 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/17 17:07:57 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/18 19:49:26 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,26 @@ int		init_flags(char **av, int *flags)
 	return (0);
 }
 
+void	ft_error(char *name)
+{
+	int i;
+
+	i = -1;
+	write(1, "ls: ", 4);
+	if (errno == 13)
+	{
+		while (name[++i])
+			;
+		while (name[--i] != '/' && i > -1)
+			;
+		write(1, &name[i + 1], ft_strlen(&name[i + 1]));
+	}
+	else
+		write(1, name, ft_strlen(name));
+	write(1, ": ", 2);
+	ft_putendl(strerror(errno));
+}
+
 int		count_folder(char *name, int flags)
 {
 	struct dirent *dirent;
@@ -48,9 +68,10 @@ int		count_folder(char *name, int flags)
 	int len;
 
 	len = 0;
+	errno = 0;
 	if ((dir = opendir(name)) == NULL)
 	{
-		perror("");
+		ft_error(name);
 		return (-1);
 	}
 	while ((dirent = readdir(dir)))
