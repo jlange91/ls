@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/17 16:52:24 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/18 19:49:26 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/19 14:59:29 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	ft_error(char *name)
 	ft_putendl(strerror(errno));
 }
 
-int		count_folder(char *name, int flags)
+int		count_folder(char *name)
 {
 	struct dirent *dirent;
 	DIR *dir;

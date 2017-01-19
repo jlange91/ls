@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/11 16:36:16 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/18 19:34:42 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/19 18:41:50 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,14 @@
 # include <dirent.h>
 # include <sys/stat.h>
 # include <sys/types.h>
+# include <sys/acl.h>
 # include <pwd.h>
 # include <grp.h>
 # include <uuid/uuid.h>
 # include <time.h>
 # include <errno.h>
-# include "libft/includes/libft.h"
+# include "../libft/includes/libft.h"
+# include <sys/xattr.h>
 
 typedef struct		s_folder
 {
@@ -48,7 +50,7 @@ int		init_flags(char **av, int *flags);
 void	fill_three(t_file *neww, t_file *root);
 void	ft_print_three(t_file *root, int flags);
 void	ft_print_reverse_three(t_file *root, int flags);
-int		count_folder(char *name, int flags);
+int		count_folder(char *name);
 int		init_struct_file(char *name, int flags);
 void	print_rights(struct stat stat);
 void	ft_recursive(t_file *root, int flags, char *name);

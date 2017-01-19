@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/11 14:26:04 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/18 18:55:27 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/19 17:22:40 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ int		fill_info_file(char *name, int nb_file, int flags)
 	DIR		*dir;
 	t_file	file[nb_file + 1];
 	int i;
-	char *tmp;
 
 	i = 0;
 	if ((dir = opendir(name)) == NULL)
@@ -47,9 +46,8 @@ int		fill_info_file(char *name, int nb_file, int flags)
 	while ((file[i].dirent = readdir(dir)))
 	{
 		file[i].d_name = ft_strdup(file[i].dirent->d_name);
-		tmp = ft_add_prefix(name, file[i].d_name);
-		lstat(tmp, &(file[i].stat));
-		free(tmp);
+		file[i].path = ft_add_prefix(name, file[i].d_name);
+		lstat(file[i].path, &(file[i].stat));
 		if ((flags & 0b10000))
 		{
 			file[i].uid = getpwuid(file[i].stat.st_uid);
@@ -85,7 +83,7 @@ int		init_struct_file(char *name, int flags)
 {
 	int nb_file;
 
-	nb_file = count_folder(name, flags);
+	nb_file = count_folder(name);
 	fill_info_file(name, nb_file, flags);
 	return (1);
 }
@@ -126,10 +124,13 @@ int main(int ac, char **av)
 	int flags;
 	int ret;
 
+	ac = (int)ac;
 	flags = 0;
 	if ((ret = init_flags(av, &flags)) != 0)
 	{
-		ft_printf("ntm charactere de merde : %c\n", ret);
+		write(1, "ls: illegal option -- ", 22);
+		write(1, &ret, 1);
+		write(1, "\n", 1);
 		return (0);
 	}
 	ft_ls(flags, av);

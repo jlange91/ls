@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/17 16:54:47 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/18 19:51:56 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/19 19:30:21 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ void	fill_three_time(t_file *new, t_file *root)
 
 void	ft_print_three(t_file *root, int flags)
 {
+	acl_t acl;
+
 	if (root->left)
 		ft_print_three(root->left, flags);
 	if (root->d_name[0] != '.' || (flags & 0b00100))
@@ -85,7 +87,17 @@ void	ft_print_three(t_file *root, int flags)
 		if ((flags & 0b10000))
 		{
 			print_rights(root->stat);
-			write(1, "  ", 2);
+			if (listxattr(root->path, NULL, 0, XATTR_NOFOLLOW) > 0)
+			{
+				write(1, "@  ", 3);
+			}
+			else if ((acl = acl_get_file(root->path, ACL_TYPE_EXTENDED)))
+			{
+				write(1, "+  ", 3);
+				acl_free((void*)acl);
+			}
+			else
+				write(1, "  ", 2);
 		}
 		ft_putendl(root->d_name);
 	}
@@ -95,6 +107,8 @@ void	ft_print_three(t_file *root, int flags)
 
 void	ft_print_reverse_three(t_file *root, int flags)
 {
+	acl_t acl;
+
 	if (root->right)
 		ft_print_reverse_three(root->right, flags);
 	if (root->d_name[0] != '.' || (flags & 0b00100))
@@ -102,7 +116,17 @@ void	ft_print_reverse_three(t_file *root, int flags)
 		if ((flags & 0b10000))
 		{
 			print_rights(root->stat);
-			write(1, "  ", 2);
+			if (listxattr(root->path, NULL, 0, XATTR_NOFOLLOW) > 0)
+			{
+				write(1, "@  ", 3);
+			}
+			else if ((acl = acl_get_file(root->path, ACL_TYPE_EXTENDED)))
+			{
+				write(1, "+  ", 3);
+				acl_free((void*)acl);
+			}
+			else
+				write(1, "  ", 2);
 		}
 		ft_putendl(root->d_name);
 	}
