@@ -51,5 +51,8 @@ void	ft_print_reverse_three(t_file *root, int flags);
 int		count_folder(char *name, int flags);
 int		init_struct_file(char *name, int flags);
 void	print_rights(struct stat stat);
+void	ft_recursive(t_file *root, int flags, char *name);
+void	ft_reverse_recursive(t_file *root, int flags, char *name);
+char	*ft_add_prefix(char *s1, char *s2);
 
 #endif

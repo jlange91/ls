@@ -34,70 +34,6 @@ void	ft_test9(t_file *root)
 	}
 }
 
-char	*ft_add_prefix(char *s1, char *s2)
-{
-	char	*ret;
-	int		i;
-	int		j;
-	if (!s1 || !s2)
-		return (NULL);
-	ret = (char*)malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 2));
-	i = -1;
-	j = -1;
-	if (ret == NULL)
-		return (NULL);
-	while (s1[++i])
-		ret[i] = s1[i];
-	if (s1[0] != '/' || s1[1] != '\0')
-	{
-		ret[i] = '/';
-		++i;
-	}
-	while (s2[++j])
-	{
-		ret[i] = s2[j];
-		i++;
-	}
-	ret[i] = '\0';
-	return (ret);
-}
-
-void	ft_recursive(t_file *root, int flags, char *name)
-{
-	char *tmp;
-
-	if (root->left)
-		ft_recursive(root->left, flags, name);
-	if (root->d_name[0] != '.' && ((root->stat.st_mode & 0xF000) ^ S_IFDIR) == 0)
-	{
-		tmp = ft_add_prefix(name, root->d_name);
-		write(1, "\n", 1);
-		write(1, tmp, ft_strlen(tmp));
-		ft_putendl(":");
-		init_struct_file(tmp, flags);
-	}
-	if (root->right)
-		ft_recursive(root->right, flags, name);
-}
-
-void	ft_reverse_recursive(t_file *root, int flags, char *name)
-{
-	char *tmp;
-
-	if (root->right)
-		ft_reverse_recursive(root->right, flags, name);
-	if (root->d_name[0] != '.' && ((root->stat.st_mode & 0xF000) ^ S_IFDIR) == 0)
-	{
-		tmp = ft_add_prefix(name, root->d_name);
-		write(1, "\n", 1);
-		write(1, tmp, ft_strlen(tmp));
-		ft_putendl(":");
-		init_struct_file(tmp, flags);
-	}
-	if (root->left)
-		ft_reverse_recursive(root->left, flags, name);
-}
-
 int		fill_info_file(char *name, int nb_file, int flags)
 {
 	DIR		*dir;
@@ -113,6 +49,7 @@ int		fill_info_file(char *name, int nb_file, int flags)
 		file[i].d_name = ft_strdup(file[i].dirent->d_name);
 		tmp = ft_add_prefix(name, file[i].d_name);
 		lstat(tmp, &(file[i].stat));
+		free(tmp);
 		if ((flags & 0b10000))
 		{
 			file[i].uid = getpwuid(file[i].stat.st_uid);
