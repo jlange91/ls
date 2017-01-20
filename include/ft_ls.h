@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/11 16:36:16 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/19 18:41:50 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/20 21:03:03 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,15 +46,28 @@ typedef struct		s_file
 	char			*path;
 }					t_file;
 
+typedef struct		s_len
+{
+	int		lnk;
+	int		uid;
+	int		grp;
+	int		size;
+}					t_len;
+
 int		init_flags(char **av, int *flags);
 void	fill_three(t_file *neww, t_file *root);
+void	fill_three_time(t_file *neww, t_file *root);
 void	ft_print_three(t_file *root, int flags);
 void	ft_print_reverse_three(t_file *root, int flags);
 int		count_folder(char *name, int flags);
 int		init_struct_file(char *name, int flags);
-void	print_rights(struct stat stat);
+void	print_rights(struct stat stat, char **buf);
 void	ft_recursive(t_file *root, int flags, char *name);
 void	ft_reverse_recursive(t_file *root, int flags, char *name);
 char	*ft_add_prefix(char *s1, char *s2);
+void	ft_charcat(char **s1, const char s2);
+void	ft_strcat_ls(char **s1, const char *s2);
+void	ft_add_name(char **s1, const char *s2);
+void	ft_print_lflag(t_file *root);
 
 #endif

@@ -6,7 +6,7 @@
 #    By: jlange <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/12/28 12:33:38 by jlange            #+#    #+#              #
-#    Updated: 2017/01/19 15:09:11 by jlange           ###   ########.fr        #
+#    Updated: 2017/01/20 17:25:54 by jlange           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,14 +29,15 @@ CFLAGS = -Wall -Wextra -Werror
 
 CPPFLAGS = -Iinclude
 
-SRC_LIB_NAME =  ft_ls.c					\
+SRC_NAME =  ft_ls.c					\
 			infos.c					\
 			recursive.c				\
 			rights.c				\
 			three.c					\
 			tools.c					\
+			l_flag.c				\
 
-OBJ = $(SRC_LIB_NAME:.c=.o)
+OBJ = $(SRC_NAME:.c=.o)
 
 OBJ_LIB_NAME = $(addprefix obj/, $(OBJ))
 

@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/11 14:26:04 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/18 18:55:27 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/20 17:19:13 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,53 @@ char	*ft_add_prefix(char *s1, char *s2)
 	}
 	ret[i] = '\0';
 	return (ret);
+}
+
+void	ft_charcat(char **s1, const char s2)
+{
+	while (**s1)
+		(*s1)++;
+	**s1 = s2;
+	(*s1)++;
+	**s1 = '\0';
+}
+
+void	ft_strcat_ls(char **s1, const char *s2)
+{
+	int i;
+
+	i = 0;
+	while (**s1)
+		(*s1)++;
+	if (**s1 == '\0')
+	{
+		while (s2[i])
+		{
+			**s1 = s2[i];
+			i++;
+			(*s1)++;
+		}
+	}
+	**s1 = '\0';
+}
+
+void	ft_add_name(char **s1, const char *s2)
+{
+	int i;
+
+	i = 0;
+	while (**s1)
+		(*s1)++;
+	if (**s1 == '\0')
+	{
+		while (s2[i])
+		{
+			**s1 = s2[i];
+			i++;
+			(*s1)++;
+		}
+	}
+	**s1 = '\n';
+	(*s1)++;
+	**s1 = '\0';
 }

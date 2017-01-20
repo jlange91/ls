@@ -6,13 +6,13 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/11 14:26:04 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/19 17:22:40 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/20 20:17:50 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void	ft_test9(t_file *root)
+/*void	ft_test9(t_file *root)
 {
 	while (1)
 	{
@@ -32,7 +32,7 @@ void	ft_test9(t_file *root)
 		else if (c == 'b')
 			return ;
 	}
-}
+}*/
 
 int		fill_info_file(char *name, int nb_file, int flags)
 {
@@ -66,7 +66,10 @@ int		fill_info_file(char *name, int nb_file, int flags)
 		file->right = NULL;
 		while (file[i].dirent != NULL)
 		{
-			fill_three(&file[i], &file[0]);
+			if ((flags & 0b00001))
+				fill_three_time(&file[i], &file[0]);
+			else
+				fill_three(&file[i], &file[0]);
 			i++;
 		}
 		if ((flags & 0b00010))
@@ -101,7 +104,7 @@ int		ft_ls(int flags, char **av)
 	test = 1;
 	while (av[i] && test == 1)
 	{
-		if (av[i][0] == '-')
+		if (av[i][0] == '-' && av[i][1] != '\0')
 		{
 			if (av[i][1] == '-')
 			{

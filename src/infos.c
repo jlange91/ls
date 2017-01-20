@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/17 16:52:24 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/19 14:59:29 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/20 20:14:42 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ void	ft_error(char *name)
 
 int		count_folder(char *name, int flags)
 {
+	t_file root;
 	struct dirent *dirent;
 	DIR *dir;
 	int len;
@@ -71,6 +72,17 @@ int		count_folder(char *name, int flags)
 	errno = 0;
 	if ((dir = opendir(name)) == NULL)
 	{
+		if (errno == 20)
+		{
+			root.d_name = name;
+			root.path = name;
+			lstat(name, &root.stat);
+			if ((flags & 0b10000))
+				ft_print_lflag(&root);
+			else
+				ft_putendl(name);
+			return (-1);
+		}
 		ft_error(name);
 		return (-1);
 	}

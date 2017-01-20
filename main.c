@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/06 17:20:27 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/15 17:08:33 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/20 20:13:39 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 #include <time.h>
 #include <sys/types.h>
 
-int main(int ac, char **av)
+/*int main(int ac, char **av)
 {
 	struct dirent *test;
 	DIR *ntm;
@@ -39,8 +39,8 @@ int main(int ac, char **av)
 			closedir(ntm);
 		}
 	}
-}
-/*
+}*/
+
 void	ft_test1(struct stat test)
 {
 	char type[] = "-dlbcp\0";
@@ -109,6 +109,7 @@ int main(int ac, char **av)
 {
 	struct dirent *test;
 	struct stat test2;
+	time_t lol;
 	DIR *ntm;
 
 	if (av[1])
@@ -124,8 +125,7 @@ int main(int ac, char **av)
 		printf("\nnombre de lien : %d\n", test2.st_nlink);
 		display_uid(test2.st_uid, test2.st_gid);
 		printf("taille : %lld octets\n", test2.st_size);
-		if (((test2.st_mode & 0xF000) ^ S_IFBLK) == 0 ||
-				((test2.st_mode & 0xF000) ^ S_IFCHR) == 0)
-			printf("majeur : %d   mineur : %d", major(test2.st_rdev), minor(test2.st_rdev));
+		printf("majeur : %d   mineur : %d\n", major(test2.st_rdev), minor(test2.st_rdev));
+		printf("date de derniere modif : %s", ctime(&test2.st_mtime));
 	}
-}*/
+}

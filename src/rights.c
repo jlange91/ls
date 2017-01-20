@@ -6,13 +6,13 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/18 17:27:02 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/19 17:05:35 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/20 21:04:18 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-static void		file_type(struct stat stat)
+static void		file_type(struct stat stat, char **buf)
 {
 	char	*type;
 	int		tab[7];
@@ -29,10 +29,10 @@ static void		file_type(struct stat stat)
 	tab[6] = 0;
 	while (tab[i] && ((stat.st_mode & 0xF000) ^ tab[i]) != 0)
 		i++;
-	ft_putchar(type[i]);
+	ft_charcat(buf, type[i]);
 }
 
-static void		rights_usr_grp(struct stat stat, int *tab)
+static void		rights_usr_grp(struct stat stat, int *tab, char **buf)
 {
 	char	type[8][4];
 	int		i;
@@ -49,7 +49,7 @@ static void		rights_usr_grp(struct stat stat, int *tab)
 	while (i != 8 && ((stat.st_mode & tab[i]) != (stat.st_mode & 0700)))
 		i++;
 	if (i != 8)
-		ft_putstr(type[i]);
+		ft_strcat_ls(buf, type[i]);
 	i = -1;
 	while (++i != 8)
 		tab[i] >>= 3;
@@ -57,10 +57,10 @@ static void		rights_usr_grp(struct stat stat, int *tab)
 	while (i != 8 && ((stat.st_mode & tab[i]) != (stat.st_mode & 070)))
 		i++;
 	if (i != 8)
-		ft_putstr(type[i]);
+		ft_strcat_ls(buf, type[i]);
 }
 
-static void		rights_oth1(struct stat stat, int *tab)
+static void		rights_oth1(struct stat stat, int *tab, char **buf)
 {
 	char	type[8][4];
 	int		i;
@@ -74,13 +74,13 @@ static void		rights_oth1(struct stat stat, int *tab)
 	ft_strcpy(type[5], "r-x");
 	ft_strcpy(type[6], "-wx");
 	ft_strcpy(type[7], "rwx");
-	while (((stat.st_mode & tab[i]) != (stat.st_mode & 07)) && i != 8)
+	while (i != 8 && ((stat.st_mode & tab[i]) != (stat.st_mode & 07)))
 		i++;
 	if (i != 8)
-		ft_putstr(type[i]);
+		ft_strcat_ls(buf, type[i]);
 }
 
-static void		rights_oth2(struct stat stat, int *tab)
+static void		rights_oth2(struct stat stat, int *tab, char **buf)
 {
 	char	type[8][4];
 	int		i;
@@ -94,13 +94,13 @@ static void		rights_oth2(struct stat stat, int *tab)
 	ft_strcpy(type[5], "r-x");
 	ft_strcpy(type[6], "-wx");
 	ft_strcpy(type[7], "rwt");
-	while (((stat.st_mode & tab[i]) != (stat.st_mode & 07)) && i != 8)
+	while (i != 8 && ((stat.st_mode & tab[i]) != (stat.st_mode & 07)))
 		i++;
 	if (i != 8)
-		ft_putstr(type[i]);
+		ft_strcat_ls(buf, type[i]);
 }
 
-void			print_rights(struct stat stat)
+void			print_rights(struct stat stat, char **buf)
 {
 	int i;
 	int tab[8];
@@ -114,12 +114,12 @@ void			print_rights(struct stat stat)
 	tab[5] = 0500;
 	tab[6] = 0300;
 	tab[7] = 0700;
-	file_type(stat);
-	rights_usr_grp(stat, tab);
+	file_type(stat, buf);
+	rights_usr_grp(stat, tab, buf);
 	while (++i != 8)
 		tab[i] >>= 3;
 	if ((stat.st_mode & 01000))
-		rights_oth2(stat, tab);
+		rights_oth2(stat, tab, buf);
 	else
-		rights_oth1(stat, tab);
+		rights_oth1(stat, tab, buf);
 }
