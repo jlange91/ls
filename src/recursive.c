@@ -12,19 +12,14 @@
 
 #include "ft_ls.h"
 
-static int		ft_test(char *d_name, int flags)
+static int		ft_test(char *d_name)
 {
 	if (d_name[0] == '.')
 	{
-		if ((flags & 0b00100))
-		{
-			if (d_name[1] == '\0' || (d_name[1] == '.' && d_name[2] == '\0'))
-				return (0);
-			else
-				return (1);
-		}
-		else
+		if (d_name[1] == '\0' || (d_name[1] == '.' && d_name[2] == '\0'))
 			return (0);
+		else
+			return (1);
 	}
 	return (1);
 }
@@ -35,7 +30,7 @@ void			ft_recursive(t_file *root, int flags, char *name)
 
 	if (root->left)
 		ft_recursive(root->left, flags, name);
-	if (ft_test(root->d_name, flags) &&
+	if (ft_test(root->d_name) &&
 	((root->stat.st_mode & 0xF000) ^ S_IFDIR) == 0)
 	{
 		tmp = ft_add_prefix(name, root->d_name);
@@ -54,7 +49,7 @@ void			ft_reverse_recursive(t_file *root, int flags, char *name)
 
 	if (root->right)
 		ft_reverse_recursive(root->right, flags, name);
-	if (ft_test(root->d_name, flags) &&
+	if (ft_test(root->d_name) &&
 	((root->stat.st_mode & 0xF000) ^ S_IFDIR) == 0)
 	{
 		tmp = ft_add_prefix(name, root->d_name);

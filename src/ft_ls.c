@@ -45,37 +45,41 @@ int		fill_info_file(char *name, int nb_file, int flags)
 		return (-1);
 	while ((file[i].dirent = readdir(dir)))
 	{
-		file[i].d_name = ft_strdup(file[i].dirent->d_name);
-		file[i].path = ft_add_prefix(name, file[i].d_name);
-		lstat(file[i].path, &(file[i].stat));
-		if ((flags & 0b10000))
+		if (file[i].dirent->d_name[0] != '.' || (flags & 0b00100))
 		{
-			file[i].uid = getpwuid(file[i].stat.st_uid);
-			file[i].grp = getgrgid(file[i].stat.st_gid);
+			file[i].d_name = ft_strdup(file[i].dirent->d_name);
+			file[i].path = ft_add_prefix(name, file[i].d_name);
+			lstat(file[i].path, &(file[i].stat));
+			if ((flags & 0b10000))
+			{
+				file[i].uid = getpwuid(file[i].stat.st_uid);
+				file[i].grp = getgrgid(file[i].stat.st_gid);
+			}
+			i++;
 		}
-	//	printf("%s\n", file[i].dirent->d_name);
-		i++;
 	}
-	i = 1;
-	file->left = NULL;
-	file->right = NULL;
-	while (file[i].dirent != NULL)
-	{
-		fill_three(&file[i], &file[0]);
-		i++;
-	}
-//	ft_test2(&file[0]);
 	closedir(dir);
-	if ((flags & 0b00010))
+	if (i > 0)
 	{
-		ft_print_reverse_three(&file[0], flags);
+		i = 1;
+		file->left = NULL;
+		file->right = NULL;
+		while (file[i].dirent != NULL)
+		{
+			fill_three(&file[i], &file[0]);
+			i++;
+		}
+		if ((flags & 0b00010))
+		{
+			ft_print_reverse_three(&file[0], flags);
+			if (flags & 0b01000)
+				ft_reverse_recursive(file, flags, name);
+			return (0);
+		}
+		ft_print_three(&file[0], flags);
 		if (flags & 0b01000)
-			ft_reverse_recursive(file, flags, name);
-		return (0);
+			ft_recursive(file, flags, name);
 	}
-	ft_print_three(&file[0], flags);
-	if (flags & 0b01000)
-		ft_recursive(file, flags, name);
 	return (0);
 }
 
@@ -83,7 +87,7 @@ int		init_struct_file(char *name, int flags)
 {
 	int nb_file;
 
-	nb_file = count_folder(name);
+	nb_file = count_folder(name, flags);
 	fill_info_file(name, nb_file, flags);
 	return (1);
 }

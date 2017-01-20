@@ -50,7 +50,7 @@ int		init_flags(char **av, int *flags);
 void	fill_three(t_file *neww, t_file *root);
 void	ft_print_three(t_file *root, int flags);
 void	ft_print_reverse_three(t_file *root, int flags);
-int		count_folder(char *name);
+int		count_folder(char *name, int flags);
 int		init_struct_file(char *name, int flags);
 void	print_rights(struct stat stat);
 void	ft_recursive(t_file *root, int flags, char *name);

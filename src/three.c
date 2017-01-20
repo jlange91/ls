@@ -82,25 +82,22 @@ void	ft_print_three(t_file *root, int flags)
 
 	if (root->left)
 		ft_print_three(root->left, flags);
-	if (root->d_name[0] != '.' || (flags & 0b00100))
+	if ((flags & 0b10000))
 	{
-		if ((flags & 0b10000))
+		print_rights(root->stat);
+		if (listxattr(root->path, NULL, 0, XATTR_NOFOLLOW) > 0)
 		{
-			print_rights(root->stat);
-			if (listxattr(root->path, NULL, 0, XATTR_NOFOLLOW) > 0)
-			{
-				write(1, "@  ", 3);
-			}
-			else if ((acl = acl_get_file(root->path, ACL_TYPE_EXTENDED)))
-			{
-				write(1, "+  ", 3);
-				acl_free((void*)acl);
-			}
-			else
-				write(1, "  ", 2);
+			write(1, "@  ", 3);
 		}
-		ft_putendl(root->d_name);
+		else if ((acl = acl_get_file(root->path, ACL_TYPE_EXTENDED)))
+		{
+			write(1, "+  ", 3);
+			acl_free((void*)acl);
+		}
+		else
+			write(1, "  ", 2);
 	}
+	ft_putendl(root->d_name);
 	if (root->right)
 		ft_print_three(root->right, flags);
 }
@@ -111,25 +108,22 @@ void	ft_print_reverse_three(t_file *root, int flags)
 
 	if (root->right)
 		ft_print_reverse_three(root->right, flags);
-	if (root->d_name[0] != '.' || (flags & 0b00100))
+	if ((flags & 0b10000))
 	{
-		if ((flags & 0b10000))
+		print_rights(root->stat);
+		if (listxattr(root->path, NULL, 0, XATTR_NOFOLLOW) > 0)
 		{
-			print_rights(root->stat);
-			if (listxattr(root->path, NULL, 0, XATTR_NOFOLLOW) > 0)
-			{
-				write(1, "@  ", 3);
-			}
-			else if ((acl = acl_get_file(root->path, ACL_TYPE_EXTENDED)))
-			{
-				write(1, "+  ", 3);
-				acl_free((void*)acl);
-			}
-			else
-				write(1, "  ", 2);
+			write(1, "@  ", 3);
 		}
-		ft_putendl(root->d_name);
+		else if ((acl = acl_get_file(root->path, ACL_TYPE_EXTENDED)))
+		{
+			write(1, "+  ", 3);
+			acl_free((void*)acl);
+		}
+		else
+			write(1, "  ", 2);
 	}
+	ft_putendl(root->d_name);
 	if (root->left)
 		ft_print_reverse_three(root->left, flags);
 }

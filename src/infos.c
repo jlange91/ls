@@ -61,7 +61,7 @@ void	ft_error(char *name)
 	ft_putendl(strerror(errno));
 }
 
-int		count_folder(char *name)
+int		count_folder(char *name, int flags)
 {
 	struct dirent *dirent;
 	DIR *dir;
@@ -75,7 +75,8 @@ int		count_folder(char *name)
 		return (-1);
 	}
 	while ((dirent = readdir(dir)))
-		len++;
+		if (dirent->d_name[0] != '.' || (flags & 0b00100))
+			len++;
 	closedir(dir);
 	return (len);
 }
