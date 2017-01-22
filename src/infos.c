@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/17 16:52:24 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/20 20:14:42 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/22 17:46:20 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,51 +41,15 @@ int		init_flags(char **av, int *flags)
 	return (0);
 }
 
-void	ft_error(char *name)
-{
-	int i;
-
-	i = -1;
-	write(1, "ls: ", 4);
-	if (errno == 13)
-	{
-		while (name[++i])
-			;
-		while (name[--i] != '/' && i > -1)
-			;
-		write(1, &name[i + 1], ft_strlen(&name[i + 1]));
-	}
-	else
-		write(1, name, ft_strlen(name));
-	write(1, ": ", 2);
-	ft_putendl(strerror(errno));
-}
-
 int		count_folder(char *name, int flags)
 {
-	t_file root;
 	struct dirent *dirent;
 	DIR *dir;
 	int len;
 
 	len = 0;
-	errno = 0;
 	if ((dir = opendir(name)) == NULL)
-	{
-		if (errno == 20)
-		{
-			root.d_name = name;
-			root.path = name;
-			lstat(name, &root.stat);
-			if ((flags & 0b10000))
-				ft_print_lflag(&root);
-			else
-				ft_putendl(name);
-			return (-1);
-		}
-		ft_error(name);
 		return (-1);
-	}
 	while ((dirent = readdir(dir)))
 		if (dirent->d_name[0] != '.' || (flags & 0b00100))
 			len++;

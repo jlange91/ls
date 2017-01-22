@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/11 16:36:16 by jlange            #+#    #+#             */
-/*   Updated: 2017/01/20 21:03:03 by jlange           ###   ########.fr       */
+/*   Updated: 2017/01/22 17:25:25 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	fill_three_time(t_file *neww, t_file *root);
 void	ft_print_three(t_file *root, int flags);
 void	ft_print_reverse_three(t_file *root, int flags);
 int		count_folder(char *name, int flags);
-int		init_struct_file(char *name, int flags);
+void	init_struct_file(char *name, int flags);
 void	print_rights(struct stat stat, char **buf);
 void	ft_recursive(t_file *root, int flags, char *name);
 void	ft_reverse_recursive(t_file *root, int flags, char *name);
